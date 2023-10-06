@@ -2,16 +2,15 @@ import { useEffect, useState } from "react"
 
 // Responsible for rendering of individual todo items and event-handlers for checkmark and delete-todo's
 export default function Todo({ todoLists, handleCheckmark, handleNotesDelete }) {
-    const [toggleTodo, setToggleTodo] = useState(true)
+    // -to toggle between todo and complete tabs
+    const [showTodo, setShowTodo] = useState(true)
 
-    const handleTodoToggle = (status) => {
-        setToggleTodo(prev => status)
-    }
-    const handleCompletedToggle = (status) => {
-        setToggleTodo(prev => status)
+    const handleShowTodo = (status) => {
+        setShowTodo(prev => status)
     }
 
-    const renderTodo = (item) => {
+
+    const renderTodoItem = (item) => {
         return (
             <div className='w-full flex items-center justify-center gap-2 px-2' key={item.id}>
                 <button className='bg-blue-100 w-9 h-9 rounded'
@@ -40,25 +39,25 @@ export default function Todo({ todoLists, handleCheckmark, handleNotesDelete }) 
     return (
         <>
             <div className="w-fit mb-4 flex bg-slate-200 gap-4 px-1 py-1">
-                <button className={`p-1 bg-gray-100 ${toggleTodo && 'bg-slate-200'}`} onClick={(e) => { handleTodoToggle(true) }}>
+                <button className={`p-1 bg-gray-100 ${showTodo && 'bg-slate-200'}`} onClick={(e) => { handleShowTodo(true) }}>
                     Todo's
                 </button>
-                <button className={`p-1 bg-gray-100 ${!toggleTodo && 'bg-slate-200'}`} onClick={(e) => { handleCompletedToggle(false) }}>
+                <button className={`p-1 bg-gray-100 ${!showTodo && 'bg-slate-200'}`} onClick={(e) => { handleShowTodo(false)}}>
                     Completed
                 </button>
             </div>
 
             <div className="w-full flex flex-col gap-3">
                 {todoLists.length > 0 ? (
-                    toggleTodo ? (
+                    showTodo ? (
                         // - todo tasks
                         completedTodos.length === todoLists.length
                             ? <p className="text-center">Wow! all done</p>
-                            : todoLists.map((item) => !item.isChecked && renderTodo(item))
+                            : todoLists.map((item) => !item.isChecked && renderTodoItem(item))
                     ) : (
                         // - completed tasks
                         completedTodos.length > 0
-                            ? todoLists.map((item) => item.isChecked && renderTodo(item))
+                            ? todoLists.map((item) => item.isChecked && renderTodoItem(item))
                             : <p className="text-center">Master Procrastinator ?</p>
                     )
                 ) : (
