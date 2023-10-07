@@ -18,9 +18,12 @@ export default function Todo({ todoLists, handleCheckmark, handleNotesDelete }) 
                     {item.isChecked && <span>✔️</span>}
                 </button>
                 <div className="w-4/5 md:w-[600px] border-2 py-1">
-                    <p className={`px-2 text-lg font-semibold ${item.isChecked && 'line-through'}`}>
-                        {item.title}
-                    </p>
+                    <div className={`relative px-2 ${item.isChecked && 'line-through'}`}>
+                        <p className="pt-2 text-lg font-semibold">{item.title}</p>
+                        <span className="absolute top-0 right-0 mr-1 text-xs text-slate-300">
+                            {item.time} {item.isChecked && item.completedTime && `-${item.completedTime}`}
+                        </span>
+                    </div>
                     <p className={` px-2 leading-tight`}>
                         {item.desc}
                     </p>
@@ -64,7 +67,7 @@ export default function Todo({ todoLists, handleCheckmark, handleNotesDelete }) 
                         // - completed tasks
                         completedTodos.length > 0
                             ? todoLists.map((item) => item.isChecked && renderTodoItem(item))
-                            : <p className="text-center">Master Procrastinator ?</p>
+                            : <p className="text-center">Feeling Lazy?</p>
                     )
                 ) : (
                     <p className="text-center">No task created yet</p>

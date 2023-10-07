@@ -27,6 +27,8 @@ export default function TodoLists() {
     }
   ])
 
+  let date = new Date()
+
   // - to create todo's
   const handleNotesSubmit = () => {
     if (todo.title.trim() !== '') {
@@ -34,7 +36,8 @@ export default function TodoLists() {
         title: todo.title,
         desc: todo.desc,
         isChecked: false,
-        id: crypto.randomUUID()
+        id: crypto.randomUUID(),
+        time: date.toLocaleTimeString()
       }, ...todoLists])
       setTodo({
         title: '',
@@ -61,6 +64,7 @@ export default function TodoLists() {
     const temp = todoLists.map(item => {
       if (item.id === id) {
         item.isChecked = !item.isChecked
+        item.completedTime = date.toLocaleTimeString()
         return item
       }
       return item
@@ -71,6 +75,9 @@ export default function TodoLists() {
   const handleCategorySelection = (name) => {
     console.log('category', name)
   }
+
+  console.log(todoLists)
+
   return (
     <>
       <div className='h-screen flex flex-col items-center gap-8'>
