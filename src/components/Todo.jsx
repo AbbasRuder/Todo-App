@@ -38,12 +38,18 @@ export default function Todo({ todoLists, handleCheckmark, handleNotesDelete }) 
 
     return (
         <>
-            <div className="w-fit mb-4 flex bg-slate-200 gap-4 px-1 py-1">
-                <button className={`p-1 bg-gray-100 ${showTodo && 'bg-slate-200'}`} onClick={(e) => { handleShowTodo(true) }}>
-                    Todo's
+            <div className="w-fit mb-4 flex bg-slate-200">
+                <button className={`relative bg-gray-100 ${showTodo && 'bg-slate-200 drop-shadow-lg'}`} onClick={(e) => { handleShowTodo(true) }}>
+                    <p className="mx-5 my-2"> Todo's</p>
+                    <span className="absolute top-0 right-0 w-5 bg-blue-200 rounded-full drop-shadow-md text-sm">
+                        {todoLists.length - completedTodos.length}
+                    </span>
                 </button>
-                <button className={`p-1 bg-gray-100 ${!showTodo && 'bg-slate-200'}`} onClick={(e) => { handleShowTodo(false)}}>
-                    Completed
+                <button className={`relative bg-gray-100 ${!showTodo && 'bg-slate-200 drop-shadow-md'}`} onClick={(e) => { handleShowTodo(false)}}>
+                    <p className="mx-5 my-2">Completed</p>
+                    <span className="absolute top-0 right-0 w-5 bg-blue-200 rounded-full drop-shadow-md text-sm">
+                        {completedTodos.length}
+                    </span>
                 </button>
             </div>
 
