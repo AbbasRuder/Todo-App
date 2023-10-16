@@ -3,10 +3,10 @@ import React from 'react'
 export default function TodoCategories({ todoCategories, handleCategorySelection }) {
 
     return (
-        <select 
-            name="category" 
-            id="category" 
-            className='border-2' 
+        <select
+            name="category"
+            id="category"
+            className='border-2'
             onChange={(e) => handleCategorySelection(e.target.value)}
         >
             <option value="">Select category</option>

@@ -1,127 +1,133 @@
-import { useState } from "react"
+import React, { useState } from 'react'
+import TodoItem from './TodoItem'
+import TodoInput from './TodoInput'
+import TodoCategories from './TodoCategories'
 
-// Responsible for rendering of individual todo items and event-handlers for checkmark and delete-todo's
-export default function Todo({ todoLists, handleCheckmark, handleNotesDelete, handleModalToggle, showModal, handleEdit }) {
-    // -to toggle between todo and complete tabs
-    const [showTodo, setShowTodo] = useState(true)
-    // - the note that is being updated
-    const [noteToUpdate, setNoteToUpdate] = useState(null)
 
-    const handleShowTodo = (status) => {
-        setShowTodo(prev => status)
+export default function TodoLists() {
+  // -value of input field
+  const [todo, setTodo] = useState({
+    title: '',
+    desc: ''
+  })
+  // -all todo-items array of objects
+  const [todoLists, setTodoLists] = useState([])
+  const [todoCategories, setTodoCategories] = useState([
+    {
+      category: 'work',
+      id: 'clsm32',
+    },
+    {
+      category: 'home',
+      id: 'scfb23',
+    },
+    {
+      category: 'hobby',
+      id: 'sjiqn32',
     }
+  ])
+  const [showModal, setShowModule] = useState(false)
 
-    // -handle update modal and input form
-    const handleUpdateModal = (status, id) => {
-        handleModalToggle(status)
-        const filterNotesToEdit = todoLists.filter(item => item.id === id)
-        setNoteToUpdate(filterNotesToEdit[0])
+  let date = new Date()
+
+  // - to create todo's
+  const handleCreateTodo = () => {
+    if (todo.title.trim() !== '') {
+      setTodoLists((currentTodos) => {
+        return [
+          {
+            title: todo.title,
+            desc: todo.desc,
+            isChecked: false,
+            id: crypto.randomUUID(),
+            time: date.toLocaleTimeString()
+          },
+          ...currentTodos]
+      })
+
+      setTodo({
+        title: '',
+        desc: ''
+      })
     }
+  }
 
-    //- handle submission of the updated note
-    const handleNoteUpdateSubmit = () => {
-        handleEdit(noteToUpdate)
-        handleModalToggle(false)
+  // - to create todo on 'Enter' key
+  const handleKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      handleCreateTodo()
     }
+  }
 
-    // - tracks the no of completed tasks
-    const completedTodos = todoLists.filter(item => item.isChecked === true)
+  // - to delete todo's
+  const handleDelete = (id) => {
+    setTodoLists((currentTodos) => {
+      const nextTodos = currentTodos.filter(item => item.id !== id)
+      return nextTodos
+    })
+  }
 
-    // - individual todo items
-    const renderTodoItem = (item) => {
-        return (
-            <div className='w-full flex items-center justify-center gap-2 px-2' key={item.id}>
-                <button className='bg-blue-100 w-9 h-9 rounded'
-                    onClick={() => handleCheckmark(item.id)}
-                    disabled={showModal}
-                >
-                    {item.isChecked && <span>✔️</span>}
-                </button>
-                <div className="w-4/5 md:w-[600px] border-2 py-1">
-                    <div className={`relative px-2 ${item.isChecked && 'line-through'}`}>
-                        <p className="pt-2 text-lg font-semibold">{item.title}</p>
-                        <span className="absolute top-0 right-0 mr-1 text-xs text-slate-300">
-                            {item.time} {item.isChecked && item.completedTime && `-${item.completedTime}`}
-                        </span>
-                    </div>
-                    <p className={` px-2 leading-tight`}>
-                        {item.desc}
-                    </p>
-                </div>
-                <button className='bg-red-200 h-9 px-2 rounded'
-                    onClick={() => handleNotesDelete(item.id)}
-                    disabled={showModal}
-                >
-                    ✖️
-                </button>
-                {!item.isChecked && <button className='bg-blue-100 h-9 px-2 rounded'
-                    onClick={() => handleUpdateModal(true, item.id)}
-                    disabled={showModal}
-                >
-                    📝
-                </button>}
-            </div>
-        )
-    }
 
-    return (
-        <>
-            {/* Todo and Completed tabs */}
-            <div className="w-fit mb-4 flex bg-slate-200">
-                <button className={`relative bg-gray-100 ${showTodo && 'bg-slate-200 drop-shadow-lg'}`} onClick={() => handleShowTodo(true)}>
-                    <p className="mx-5 my-2"> Todo's</p>
-                    <span className="absolute top-0 right-0 w-5 bg-blue-200 rounded-full drop-shadow-md text-sm">
-                        {todoLists.length - completedTodos.length}
-                    </span>
-                </button>
-                <button className={`relative bg-gray-100 ${!showTodo && 'bg-slate-200 drop-shadow-md'}`} onClick={() => handleShowTodo(false)}>
-                    <p className="mx-5 my-2">Completed</p>
-                    <span className="absolute top-0 right-0 w-5 bg-blue-200 rounded-full drop-shadow-md text-sm">
-                        {completedTodos.length}
-                    </span>
-                </button>
-            </div>
+  // - to handle checkmark
+  const handleCheckmark = (id) => {
+    const updatedTodos = todoLists.map(item => {
+      if (item.id === id) {
+        item.isChecked = !item.isChecked
+        item.completedTime = date.toLocaleTimeString()
+        return item
+      }
+      return item
+    })
+    setTodoLists(updatedTodos)
+  }
 
-            {/* todo items */}
-            <div className={`w-full flex flex-col gap-3 ${showModal && "opacity-30"}`}>
-                {todoLists.length > 0 ? (
-                    showTodo ? (
-                        // - todo tasks
-                        completedTodos.length === todoLists.length
-                            ? <p className="text-center">Wow! all done</p>
-                            : todoLists.map((item) => !item.isChecked && renderTodoItem(item))
-                    ) : (
-                        // - completed tasks
-                        completedTodos.length > 0
-                            ? todoLists.map((item) => item.isChecked && renderTodoItem(item))
-                            : <p className="text-center">Feeling Lazy?</p>
-                    )
-                ) : (
-                    <p className="text-center">No task created yet</p>
-                )
-                }
-            </div>
+  // - handle update modal toggle
+  const handleModalToggle = (status) => {
+    setShowModule((current) => status)
+  }
 
-            {/* Modal */}
-            {showModal && (
-                <div className="flex flex-col gap-2 absolute bg-slate-200 drop-shadow-md p-10">
-                    <button className="absolute top-0 right-0 p-1 mr-1 mt-1 rounded bg-slate-100" 
-                        onClick={() => handleUpdateModal(false)}>
-                            ❌
-                    </button>
-                    <label htmlFor="title">Title:</label>
-                    <input type="text" id="title" className="border-2 p-1 rounded" 
-                        value={noteToUpdate.title} 
-                        onChange={(e) => setNoteToUpdate({...noteToUpdate, title: e.target.value})}/>
+  // - handle edit/update
+  const handleEdit = (updatedTodoItem) => {
+    const index = todoLists.findIndex(item => item.id === updatedTodoItem.id)
+    const updatedTodoList = [...todoLists]
+    // - replaces one item from the 'index' with the 'updatedTodoItem'
+    updatedTodoList.splice(index, 1, updatedTodoItem)
+    setTodoLists(updatedTodoList)
+  }
 
-                    <label htmlFor="desc">Desc:</label>
-                    <input type="text" id="desc" className="border-2 p-1 rounded" 
-                        value={noteToUpdate.desc} 
-                        onChange={(e) => setNoteToUpdate({...noteToUpdate, desc: e.target.value})}/>
+  const handleCategorySelection = (name) => {
+    console.log('category', name)
+  }
 
-                    <button className="bg-cyan-300 py-1 px-2 rounded text-white" onClick={handleNoteUpdateSubmit}>Update</button>
-                </div>
-            )}
-        </>
-    )
-}
+
+  return (
+    <>
+      <div className='h-screen flex flex-col items-center gap-8'>
+        <div className='text-3xl mt-20'>Todo App</div>
+
+        {/* the input field and the add todo button */}
+        <TodoInput
+          todo={todo}
+          setTodo={setTodo}
+          handleCreateTodo={handleCreateTodo}
+          handleKeyPress={handleKeyPress}
+          showModal={showModal}
+        >
+          <TodoCategories todoCategories={todoCategories} handleCategorySelection={handleCategorySelection} />
+        </TodoInput>
+
+        {/* the individual todo items */}
+        <div className='w-4/5 flex flex-col items-center'>
+          <TodoItem
+            todoLists={todoLists}
+            handleCheckmark={handleCheckmark}
+            handleDelete={handleDelete}
+            handleModalToggle={handleModalToggle}
+            showModal={showModal}
+            handleEdit={handleEdit}
+          />
+        </div>
+      </div>
+    </>
+  )
+} 
