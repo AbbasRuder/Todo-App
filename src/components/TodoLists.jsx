@@ -26,6 +26,7 @@ export default function TodoLists() {
       id: 'sjiqn32',
     }
   ])
+  const [showModal, setShowModule] = useState(false)
 
   let date = new Date()
 
@@ -72,11 +73,24 @@ export default function TodoLists() {
     setTodoLists(temp)
   }
 
+  // - handle update modal toggle
+  const handleModalToggle = (status) => {
+    setShowModule((current) => status)
+  }
+
+  // - handle edit/update
+  const handleEdit = (updatedTodoItem) => {
+    const index = todoLists.findIndex(item => item.id === updatedTodoItem.id)
+    const updatedTodoList = [...todoLists]
+    // - replaces one item from the 'index' with the 'updatedTodoItem'
+    updatedTodoList.splice(index, 1, updatedTodoItem)
+    setTodoLists(updatedTodoList)
+  }
+
   const handleCategorySelection = (name) => {
     console.log('category', name)
   }
 
-  console.log(todoLists)
 
   return (
     <>
@@ -89,6 +103,7 @@ export default function TodoLists() {
           setTodo={setTodo}
           handleNotesSubmit={handleNotesSubmit}
           handleKeyPress={handleKeyPress}
+          showModal={showModal}
         >
           <TodoCategories todoCategories={todoCategories} handleCategorySelection={handleCategorySelection} />
         </TodoInput>
@@ -99,6 +114,9 @@ export default function TodoLists() {
             todoLists={todoLists}
             handleCheckmark={handleCheckmark}
             handleNotesDelete={handleNotesDelete}
+            handleModalToggle={handleModalToggle}
+            showModal={showModal}
+            handleEdit={handleEdit}
           />
         </div>
       </div>

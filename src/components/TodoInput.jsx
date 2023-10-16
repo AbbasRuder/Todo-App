@@ -1,6 +1,6 @@
 import React from 'react'
 
-export default function TodoInput({ children, todo, setTodo, handleNotesSubmit, handleKeyPress }) {
+export default function TodoInput({ children, todo, setTodo, handleNotesSubmit, handleKeyPress, showModal }) {
     return (
         <div className='flex flex-col sm:flex-row gap-2'>
             <input
@@ -10,6 +10,7 @@ export default function TodoInput({ children, todo, setTodo, handleNotesSubmit, 
                 value={todo.title}
                 onChange={(e) => setTodo((prev) => ({...prev, title: e.target.value}))}
                 onKeyUp={handleKeyPress}
+                disabled={showModal}
             />
             <input
                 type="text"
@@ -18,6 +19,7 @@ export default function TodoInput({ children, todo, setTodo, handleNotesSubmit, 
                 value={todo.desc}
                 onChange={(e) => setTodo((prev) => ({...prev, desc: e.target.value}))}
                 onKeyUp={handleKeyPress}
+                disabled={showModal}
             />
             {children}
             <button className='bg-slate-300 px-2 rounded' onClick={handleNotesSubmit}>➕</button>
