@@ -4,6 +4,7 @@ import { FaPlusSquare } from "react-icons/fa";
 export default function TodoInput({ children, todo, setTodo, handleCreateTodo, handleKeyPress, showModal }) {
     return (
         <div className='flex flex-col sm:flex-row gap-2'>
+            {children}
             <input
                 type="text"
                 placeholder='Title'
@@ -22,9 +23,9 @@ export default function TodoInput({ children, todo, setTodo, handleCreateTodo, h
                 onKeyUp={handleKeyPress}
                 disabled={showModal}
             />
-            {children}
-            <button className=' rounded' onClick={handleCreateTodo}>
-                <FaPlusSquare size={35} color='#7e84f2'/>
+            <button className='p-1 sm:px-4 rounded text-white bg-[#7e84f2]' onClick={handleCreateTodo}>
+                {/* <FaPlusSquare size={35} color='#7e84f2'/> */}
+                Add
             </button>
         </div>
     )

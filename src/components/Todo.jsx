@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react'
 import TodoItem from './TodoItem'
 import TodoInput from './TodoInput'
 import TodoCategories from './TodoCategories'
+import { MdOutlineLightMode, MdOutlineDarkMode } from "react-icons/md";
 
 
 export default function TodoLists() {
@@ -115,8 +116,8 @@ export default function TodoLists() {
 
   return (
     <>
-      <button className='absolute right-0 mr-10 mt-5 bg-red-300 px-2 py-1 rounded' onClick={handleDarkModeToggle}>
-        Dark-Mode
+      <button className='absolute right-0 mr-2 sm:mr-10 mt-5 bg-slate-300 px-2 py-1 rounded' onClick={handleDarkModeToggle}>
+        {darkMode ? <MdOutlineLightMode className='sm:w-6 sm:h-7'/> : <MdOutlineDarkMode className='sm:w-6 sm:h-7'/>} 
       </button>
       <div className='h-screen flex flex-col items-center gap-8'>
         <div className='mt-20 p-2 text-3xl font-bold border-2 border-cyan-100 rounded outline outline-1 outline-offset-2 outline-cyan-500 dark:text-white'>
