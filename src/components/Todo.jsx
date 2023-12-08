@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import TodoItem from './TodoItem'
 import TodoInput from './TodoInput'
 import TodoCategories from './TodoCategories'
@@ -27,6 +27,7 @@ export default function TodoLists() {
     }
   ])
   const [showModal, setShowModule] = useState(false)
+  const [darkMode, setDarkMode] = useState(false)
 
   let date = new Date()
 
@@ -99,12 +100,28 @@ export default function TodoLists() {
     console.log('category', name)
   }
 
+  const handleDarkModeToggle = () => {
+    setDarkMode(current => !current)
+  }
+
+  useEffect(() => {
+    if(darkMode) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }, [darkMode])
+
 
   return (
     <>
+      <button className='absolute right-0 mr-10 mt-5 bg-red-300 px-2 py-1 rounded' onClick={handleDarkModeToggle}>
+        Dark-Mode
+      </button>
       <div className='h-screen flex flex-col items-center gap-8'>
-        <div className='text-3xl mt-20'>Todo App</div>
-
+        <div className='mt-20 p-2 text-3xl font-bold border-2 border-cyan-100 rounded outline outline-1 outline-offset-2 outline-cyan-500 dark:text-white'>
+          Todo App
+        </div>
         {/* the input field and the add todo button */}
         <TodoInput
           todo={todo}
