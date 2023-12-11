@@ -1,5 +1,4 @@
 import React from 'react'
-import { FaPlusSquare } from "react-icons/fa";
 
 export default function TodoInput({ children, todo, setTodo, handleCreateTodo, handleKeyPress, showModal }) {
     return (
@@ -23,8 +22,7 @@ export default function TodoInput({ children, todo, setTodo, handleCreateTodo, h
                 onKeyUp={handleKeyPress}
                 disabled={showModal}
             />
-            <button className='p-1 sm:px-4 rounded text-white bg-[#7e84f2]' onClick={handleCreateTodo}>
-                {/* <FaPlusSquare size={35} color='#7e84f2'/> */}
+            <button className='p-1 sm:px-4 rounded text-white bg-indigo-600' onClick={handleCreateTodo}>
                 Add
             </button>
         </div>

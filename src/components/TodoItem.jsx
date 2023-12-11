@@ -4,35 +4,46 @@ import { FaSquareXmark } from "react-icons/fa6";
 import { FaRegEdit } from "react-icons/fa";
 import { FaRegWindowClose } from "react-icons/fa";
 
-
-// Responsible for rendering of individual todo items and event-handlers for checkmark and delete-todo's
-export default function Todo({ todoLists, handleCheckmark, handleDelete, handleModalToggle, showModal, handleEdit }) {
+// Responsible for rendering of individual todo items and event-handlers for checkmark, delete and update todo's
+export default function Todo({ 
+    todoLists, 
+    handleCheckmark, 
+    handleDelete, 
+    handleModalToggle, 
+    showModal, 
+    handleEdit,
+    todoCategories
+}) {
     // -to toggle between todo and complete tabs
     const [showTodo, setShowTodo] = useState(true)
     // - the todo item that is being updated
     const [todoToUpdate, setTodoToUpdate] = useState(null)
+    // -the selected category to display todo's
+    const [selectedCategory, setSelectedCategory] = useState()
 
     const handleShowTodo = (status) => {
         setShowTodo(prev => status)
     }
 
     // -handle update modal and input form
-    const handleUpdateModal = (status, id) => {
-        handleModalToggle(status)
-        const filterTodoToEdit = todoLists.filter(item => item.id === id)
-        setTodoToUpdate(filterTodoToEdit[0])
+    const handleUpdateModal = (id) => {
+        handleModalToggle()
+        if (id) {
+            const filterTodoToEdit = todoLists.filter(item => item.id === id)
+            setTodoToUpdate(filterTodoToEdit[0])
+        }
     }
 
     //- handle submission of the updated todo item
     const handleSubmitUpdatedTodo = () => {
         handleEdit(todoToUpdate)
-        handleModalToggle(false)
+        handleModalToggle()
     }
 
     // - tracks the no of completed tasks
     const completedTodos = todoLists.filter(item => item.isChecked === true)
 
-    // - individual todo items
+    // - render individual todo items
     const renderTodoItem = (item) => {
         return (
             <div className='w-full flex items-center justify-center gap-1 sm:gap-2 px-2' key={item.id}>
@@ -40,7 +51,7 @@ export default function Todo({ todoLists, handleCheckmark, handleDelete, handleM
                     onClick={() => handleCheckmark(item.id)}
                     disabled={showModal}
                 >
-                    {item.isChecked ? <FaCheckSquare size={38} color="#adc9f0"/> : <FaSquare size={38} color="#adc9f0"/>}
+                    {item.isChecked ? <FaCheckSquare size={38} color="#adc9f0" /> : <FaSquare size={38} color="#adc9f0" />}
                 </button>
                 <div className="w-4/5 min-w-[190px] md:w-[600px] border-2 py-1">
                     <div className={`relative px-2 ${item.isChecked && 'line-through'}`}>
@@ -53,43 +64,66 @@ export default function Todo({ todoLists, handleCheckmark, handleDelete, handleM
                         {item.desc}
                     </p>
                 </div>
-                <button 
+                <button
                     onClick={() => handleDelete(item.id)}
                     disabled={showModal}
                 >
-                    <FaSquareXmark size={38} color="#fca5a5"/>
+                    <FaSquareXmark size={38} color="#fca5a5" />
                 </button>
-                {!item.isChecked && 
-                <button className='bg-blue-200 p-2 rounded'
-                    onClick={() => handleUpdateModal(true, item.id)}
-                    disabled={showModal}
-                >
-                    <FaRegEdit size={19} color=""/>
-                </button>}
+                {!item.isChecked &&
+                    <button className='bg-blue-200 p-2 rounded'
+                        onClick={() => handleUpdateModal(item.id)}
+                        disabled={showModal}
+                    >
+                        <FaRegEdit size={19} color="" />
+                    </button>}
             </div>
         )
     }
 
+    console.log(selectedCategory)
+
     return (
         <>
-            {/* Todo and Completed tabs */}
-            <div className="w-fit mb-4 flex bg-slate-200">
-                <button className={`relative bg-gray-100 ${showTodo && 'bg-slate-200 drop-shadow-lg'}`} onClick={() => handleShowTodo(true)}>
-                    <p className="mx-5 my-2"> Todo's</p>
-                    <span className="absolute top-0 right-0 w-5 bg-blue-200 rounded-full drop-shadow-md text-sm">
-                        {todoLists.length - completedTodos.length}
-                    </span>
-                </button>
-                <button className={`relative bg-gray-100 ${!showTodo && 'bg-slate-200 drop-shadow-md'}`} onClick={() => handleShowTodo(false)}>
-                    <p className="mx-5 my-2">Completed</p>
-                    <span className="absolute top-0 right-0 w-5 bg-blue-200 rounded-full drop-shadow-md text-sm">
-                        {completedTodos.length}
-                    </span>
-                </button>
+            {/* Category selection */}
+            <div className="flex flex-col">
+                {/* Todo and Completed tabs */}
+                <div className="flex gap-2 ">
+                    <button className={`relative bg-slate-200 ${showTodo && 'text-white bg-[#4f46e5] drop-shadow-md'}`} onClick={() => handleShowTodo(true)}>
+                        <p className="text-sm sm:text-md mx-2 my-1 sm:mx-5 sm:my-2"> Todo's</p>
+                        <span className="absolute -top-2 -right-2 w-5 rounded-full drop-shadow-md text-sm bg-blue-200">
+                            {todoLists.length - completedTodos.length}
+                        </span>
+                    </button>
+                    <button className={`relative bg-slate-200 ${!showTodo && 'text-white bg-[#4f46e5] drop-shadow-md'}`} onClick={() => handleShowTodo(false)}>
+                        <p className="mx-2 my-1 sm:mx-5 sm:my-2">Completed</p>
+                        <span className="absolute -top-2 -right-2 w-5 bg-blue-200 rounded-full drop-shadow-md text-sm">
+                            {completedTodos.length}
+                        </span>
+                    </button>
+                </div>
+                <select
+                    name="category"
+                    id="category"
+                    className='border-2 mt-1 outline-none'
+                    onChange={(e) => setSelectedCategory(e.target.value)}
+                >
+                    <option value="all">All</option>
+                    {todoCategories.map(item => {
+                        return (
+                            <option
+                                value={`${item.category}`}
+                                key={item.id}
+                            >
+                                {item.category}
+                            </option>
+                        )
+                    })}
+                </select>
             </div>
 
             {/* todo items */}
-            <div className={`w-full flex flex-col gap-3 ${showModal && "opacity-30"}`}>
+            <div className={`w-full mt-4 flex flex-col gap-3 ${showModal && "opacity-30"}`}>
                 {todoLists.length > 0 ? (
                     showTodo ? (
                         // - todo tasks
@@ -112,24 +146,24 @@ export default function Todo({ todoLists, handleCheckmark, handleDelete, handleM
             {showModal && (
                 <div className="flex flex-col gap-2 absolute bg-slate-200 drop-shadow-md p-10 dark:bg-gray-600">
                     <button className="absolute top-0 right-0 p-1 mr-1 mt-1 rounded"
-                        onClick={() => handleUpdateModal(false)}>
-                        <FaRegWindowClose size={25} color="red" className="rounded"/>
+                        onClick={() => handleUpdateModal()}>
+                        <FaRegWindowClose size={25} color="red" className="rounded" />
                     </button>
                     <label htmlFor="title" className="dark:text-white">Title:</label>
-                    <input 
-                        type="text" 
-                        id="title" 
+                    <input
+                        type="text"
+                        id="title"
                         value={todoToUpdate.title}
-                        onChange={(e) => setTodoToUpdate({ ...todoToUpdate, title: e.target.value })} 
+                        onChange={(e) => setTodoToUpdate({ ...todoToUpdate, title: e.target.value })}
                         className="border-2 p-1 rounded"
                     />
 
                     <label htmlFor="desc" className="dark:text-white">Desc:</label>
-                    <input 
-                        type="text" 
-                        id="desc" 
+                    <input
+                        type="text"
+                        id="desc"
                         value={todoToUpdate.desc}
-                        onChange={(e) => setTodoToUpdate({ ...todoToUpdate, desc: e.target.value })} 
+                        onChange={(e) => setTodoToUpdate({ ...todoToUpdate, desc: e.target.value })}
                         className="border-2 p-1 rounded"
                     />
 

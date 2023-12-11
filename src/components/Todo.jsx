@@ -13,21 +13,18 @@ export default function TodoLists() {
   })
   // -all todo-items array of objects
   const [todoLists, setTodoLists] = useState([])
+  const [selectedCategory, setSelectedCategory] = useState()
   const [todoCategories, setTodoCategories] = useState([
     {
-      category: 'work',
+      category: 'Work',
       id: 'clsm32',
     },
     {
-      category: 'home',
+      category: 'Home',
       id: 'scfb23',
-    },
-    {
-      category: 'hobby',
-      id: 'sjiqn32',
     }
   ])
-  const [showModal, setShowModule] = useState(false)
+  const [showModal, setShowModal] = useState(false)
   const [darkMode, setDarkMode] = useState(false)
 
   let date = new Date()
@@ -84,8 +81,8 @@ export default function TodoLists() {
   }
 
   // - handle update modal toggle
-  const handleModalToggle = (status) => {
-    setShowModule((current) => status)
+  const handleModalToggle = () => {
+    setShowModal((current) => !current)
   }
 
   // - handle edit/update
@@ -99,6 +96,7 @@ export default function TodoLists() {
 
   const handleCategorySelection = (name) => {
     console.log('category', name)
+    console.log(todoCategories)
   }
 
   const handleDarkModeToggle = () => {
@@ -113,6 +111,8 @@ export default function TodoLists() {
     }
   }, [darkMode])
 
+
+  console.log(selectedCategory)
 
   return (
     <>
@@ -131,7 +131,7 @@ export default function TodoLists() {
           handleKeyPress={handleKeyPress}
           showModal={showModal}
         >
-          <TodoCategories todoCategories={todoCategories} handleCategorySelection={handleCategorySelection} />
+          <TodoCategories todoCategories={todoCategories} setSelectedCategory={setSelectedCategory} handleCategorySelection={handleCategorySelection} />
         </TodoInput>
 
         {/* the individual todo items */}
@@ -143,6 +143,7 @@ export default function TodoLists() {
             handleModalToggle={handleModalToggle}
             showModal={showModal}
             handleEdit={handleEdit}
+            todoCategories={todoCategories}
           />
         </div>
       </div>

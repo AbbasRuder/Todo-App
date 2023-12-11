@@ -1,13 +1,14 @@
-import React from 'react'
+import React, { useState } from 'react'
 
-export default function TodoCategories({ todoCategories, handleCategorySelection }) {
+export default function TodoCategories({ todoCategories, setSelectedCategory, handleCategorySelection }) {
+
 
     return (
         <select
             name="category"
             id="category"
             className='border-2'
-            onChange={(e) => handleCategorySelection(e.target.value)}
+            onChange={(e) => setSelectedCategory(e.target.value)}
         >
             <option value="">Select category</option>
             {todoCategories.map(item => {
