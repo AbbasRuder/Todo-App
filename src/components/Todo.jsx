@@ -13,15 +13,11 @@ export default function TodoLists() {
   })
   // -all todo-items array of objects
   const [todoLists, setTodoLists] = useState([])
-  const [selectedCategory, setSelectedCategory] = useState()
+  const [selectedCategory, setSelectedCategory] = useState('Home')
   const [todoCategories, setTodoCategories] = useState([
     {
-      category: 'Work',
-      id: 'clsm32',
-    },
-    {
       category: 'Home',
-      id: 'scfb23',
+      id: '93fd5c20-6806-454d-ae54-d993a93ea597',
     }
   ])
   const [showModal, setShowModal] = useState(false)
@@ -31,6 +27,7 @@ export default function TodoLists() {
 
   // - to create todo's
   const handleCreateTodo = () => {
+    const category = todoCategories.filter(item => item.category === selectedCategory)
     if (todo.title.trim() !== '') {
       setTodoLists((currentTodos) => {
         return [
@@ -39,6 +36,7 @@ export default function TodoLists() {
             desc: todo.desc,
             isChecked: false,
             id: crypto.randomUUID(),
+            category_id: category[0].id,
             time: date.toLocaleTimeString()
           },
           ...currentTodos]
@@ -94,33 +92,25 @@ export default function TodoLists() {
     setTodoLists(updatedTodoList)
   }
 
-  const handleCategorySelection = (name) => {
-    console.log('category', name)
-    console.log(todoCategories)
-  }
-
   const handleDarkModeToggle = () => {
     setDarkMode(current => !current)
   }
 
   useEffect(() => {
-    if(darkMode) {
+    if (darkMode) {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
     }
   }, [darkMode])
 
-
-  console.log(selectedCategory)
-
   return (
     <>
       <button className='absolute right-0 mr-2 sm:mr-10 mt-5 bg-slate-300 px-2 py-1 rounded' onClick={handleDarkModeToggle}>
-        {darkMode ? <MdOutlineLightMode className='sm:w-6 sm:h-7'/> : <MdOutlineDarkMode className='sm:w-6 sm:h-7'/>} 
+        {darkMode ? <MdOutlineLightMode className='sm:w-6 sm:h-7' /> : <MdOutlineDarkMode className='sm:w-6 sm:h-7' />}
       </button>
-      <div className='h-screen flex flex-col items-center gap-8'>
-        <div className='mt-20 p-2 text-3xl font-bold border-2 border-cyan-100 rounded outline outline-1 outline-offset-2 outline-cyan-500 dark:text-white'>
+      <div className='pt-6 flex flex-col items-center gap-8'>
+        <div className='p-2 text-3xl font-bold border-2 border-cyan-100 rounded outline outline-1 outline-offset-2 outline-cyan-500 dark:text-white'>
           Todo App
         </div>
         {/* the input field and the add todo button */}
@@ -131,7 +121,7 @@ export default function TodoLists() {
           handleKeyPress={handleKeyPress}
           showModal={showModal}
         >
-          <TodoCategories todoCategories={todoCategories} setSelectedCategory={setSelectedCategory} handleCategorySelection={handleCategorySelection} />
+          <TodoCategories todoCategories={todoCategories} setSelectedCategory={setSelectedCategory} />
         </TodoInput>
 
         {/* the individual todo items */}
@@ -144,6 +134,7 @@ export default function TodoLists() {
             showModal={showModal}
             handleEdit={handleEdit}
             todoCategories={todoCategories}
+            setTodoCategories={setTodoCategories}
           />
         </div>
       </div>

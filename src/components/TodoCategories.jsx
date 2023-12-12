@@ -1,6 +1,5 @@
-import React, { useState } from 'react'
 
-export default function TodoCategories({ todoCategories, setSelectedCategory, handleCategorySelection }) {
+export default function TodoCategories({ todoCategories, setSelectedCategory }) {
 
 
     return (
@@ -10,7 +9,6 @@ export default function TodoCategories({ todoCategories, setSelectedCategory, ha
             className='border-2'
             onChange={(e) => setSelectedCategory(e.target.value)}
         >
-            <option value="">Select category</option>
             {todoCategories.map(item => {
                 return (
                     <option

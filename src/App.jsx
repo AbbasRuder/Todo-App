@@ -4,7 +4,7 @@ function App() {
 
   return (
     <>
-      <div className="bg-slate-100 dark:bg-slate-700">
+      <div className="h-full min-h-screen bg-slate-100 dark:bg-slate-700">
         <Todo />
       </div>
     </>
